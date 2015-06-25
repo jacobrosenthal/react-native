@@ -99,7 +99,7 @@ RCT_EXPORT_MODULE()
 + (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
   NSMutableDictionary *notificationDict = [NSMutableDictionary new];
-  [notificationDict setObject:notification.alertBody forKey:@"alertBody"];
+  [notificationDict setObject:notification.alertBody forKey:@"_alert"];
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTLocalNotificationReceived
                                                       object:self
                                                     userInfo:notificationDict];
