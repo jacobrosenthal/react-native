@@ -43,7 +43,6 @@ RCT_EXPORT_MODULE()
                                              selector:@selector(handleLocalNotificationReceived:)
                                                  name:RCTLocalNotificationReceived
                                                object:nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleRemoteNotificationReceived:)
                                                  name:RCTRemoteNotificationReceived
@@ -99,7 +98,7 @@ RCT_EXPORT_MODULE()
 + (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
   NSMutableDictionary *notificationDict = [NSMutableDictionary new];
-  [notificationDict setObject:notification.alertBody forKey:@"_alert"];
+  [notificationDict setObject:notification.alertBody forKey:@"alertBody"];
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTLocalNotificationReceived
                                                       object:self
                                                     userInfo:notificationDict];
