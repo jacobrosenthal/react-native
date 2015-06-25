@@ -21,6 +21,7 @@ var _initialNotification = RCTPushNotificationManager &&
 
 var DEVICE_NOTIF_EVENT = 'remoteNotificationReceived';
 var NOTIF_REGISTER_EVENT = 'remoteNotificationsRegistered';
+var DEVICE_LOCAL_NOTIF_EVENT = 'localNotificationReceived';
 
 /**
  * Handle push notifications for your app, including permission handling and
@@ -87,8 +88,8 @@ class PushNotificationIOS {
    */
   static addEventListener(type: string, handler: Function) {
     invariant(
-      type === 'notification' || type === 'register',
-      'PushNotificationIOS only supports `notification` and `register` events'
+      type === 'notification' || type === 'register' || type === 'local_notification',
+      'PushNotificationIOS only supports `notification`, `register` and `local_notification` events'
     );
     if (type === 'notification') {
       _notifHandlers[handler] = RCTDeviceEventEmitter.addListener(
@@ -102,6 +103,13 @@ class PushNotificationIOS {
         NOTIF_REGISTER_EVENT,
         (registrationInfo) => {
           handler(registrationInfo.deviceToken);
+        }
+      );
+    } else if (type === 'local_notification') {
+      _notifHandlers[handler] = RCTDeviceEventEmitter.addListener(
+        DEVICE_LOCAL_NOTIF_EVENT,
+        (notifData) => {
+          handler(new PushNotificationIOS(notifData));
         }
       );
     }

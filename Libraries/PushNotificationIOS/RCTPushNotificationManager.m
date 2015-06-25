@@ -23,6 +23,7 @@
 
 #endif
 
+NSString *const RCTLocalNotificationReceived = @"LocalNotificationReceived";
 NSString *const RCTRemoteNotificationReceived = @"RemoteNotificationReceived";
 NSString *const RCTRemoteNotificationsRegistered = @"RemoteNotificationsRegistered";
 
@@ -38,6 +39,11 @@ RCT_EXPORT_MODULE()
 - (instancetype)init
 {
   if ((self = [super init])) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleLocalNotificationReceived:)
+                                                 name:RCTLocalNotificationReceived
+                                               object:nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleRemoteNotificationReceived:)
                                                  name:RCTRemoteNotificationReceived
@@ -88,6 +94,21 @@ RCT_EXPORT_MODULE()
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTRemoteNotificationReceived
                                                       object:self
                                                     userInfo:notification];
+}
+
++ (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
+{
+  NSMutableDictionary *notificationDict = [NSMutableDictionary new];
+  [notificationDict setObject:notification.alertBody forKey:@"alertBody"];
+  [[NSNotificationCenter defaultCenter] postNotificationName:RCTLocalNotificationReceived
+                                                      object:self
+                                                    userInfo:notificationDict];
+}
+
+- (void)handleLocalNotificationReceived:(NSNotification *)notification
+{
+  [_bridge.eventDispatcher sendDeviceEventWithName:@"localNotificationReceived"
+                                              body:[notification userInfo]];
 }
 
 - (void)handleRemoteNotificationReceived:(NSNotification *)notification
