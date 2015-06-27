@@ -97,7 +97,7 @@ RCT_EXPORT_MODULE()
 
 + (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification
 {
-  NSMutableDictionary *notificationDict = [NSMutableDictionary new];
+  NSMutableDictionary *notificationDict = [NSMutableDictionary dictionaryWithDictionary:notification.userInfo];
   [notificationDict setObject:notification.alertBody forKey:@"alertBody"];
   [[NSNotificationCenter defaultCenter] postNotificationName:RCTLocalNotificationReceived
                                                       object:self
@@ -203,6 +203,7 @@ RCT_EXPORT_METHOD(checkPermissions:(RCTResponseSenderBlock)callback)
 
   notification.fireDate = details[@"fireDate"] ? [RCTConvert NSDate:details[@"fireDate"]] : [NSDate new];
   notification.alertBody = details[@"alertBody"] ? [RCTConvert NSString:details[@"alertBody"]] : nil;
+  notification.userInfo = details[@"userInfo"] ? [RCTConvert NSDictionary:details[@"userInfo"]] : nil;
 
   return notification;
 }
