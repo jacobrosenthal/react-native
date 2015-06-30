@@ -76,6 +76,17 @@ class PushNotificationIOS {
   }
 
   /**
+   * Cancel local notifications.
+   *
+   * Optionally restricts the set of canceled notifications to those
+   * notifications whose userInfo fields match the corresponding fields
+   * in details.
+   */
+  static cancelLocalNotifications(details: object) {
+    RCTPushNotificationManager.cancelLocalNotifications(details);
+  }
+
+  /**
    * Attaches a listener to remote notification events while the app is running
    * in the foreground or the background.
    *

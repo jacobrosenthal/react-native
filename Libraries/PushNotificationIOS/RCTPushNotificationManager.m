@@ -219,4 +219,23 @@ RCT_EXPORT_METHOD(scheduleLocalNotification:(NSDictionary *)details)
   [[UIApplication sharedApplication] scheduleLocalNotification:[self createNotification:details]];
 }
 
+RCT_EXPORT_METHOD(cancelLocalNotifications:(NSDictionary *)properties)
+{
+  NSArray *scheduledNotifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
+  NSArray *propertyKeys = properties ? [properties allKeys] : [NSArray new];
+  for (UILocalNotification *notification in scheduledNotifications) {
+    bool matchesAll = true;
+    NSDictionary *notificationInfo = notification.userInfo;
+    for (NSString *key in propertyKeys) {
+      if (![properties[key] isEqual:notificationInfo[key]]) {
+        matchesAll = false;
+        break;
+      }
+    }
+    if (matchesAll) {
+      [[UIApplication sharedApplication] cancelLocalNotification:notification];
+    }
+  }
+}
+
 @end
